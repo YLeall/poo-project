@@ -1,27 +1,24 @@
 package br.com.ucsal.persistencia;
 
+import br.com.ucsal.annotations.Singleton;
+import br.com.ucsal.controller.SingletonManager;
+import br.com.ucsal.model.Produto;
+
+@Singleton
 public class PersistenciaFactory {
 
-	public static final int MEMORIA = 0;
-	public static final int HSQL = 1;
-	
-	public static ProdutoRepository<?, ?> getProdutoRepository(int type) {
-		ProdutoRepository<?, ?> produtoRepository;
-		switch (type) {
-		case 0: {
-			produtoRepository = MemoriaProdutoRepository.getInstancia();
-			break;
-		}
-		case 1: {
-			produtoRepository = new HSQLProdutoRepository();
-
-			break;
-		}
-		default:
-			throw new IllegalArgumentException("Unexpected value: " + type);
-		}
-		return produtoRepository;
+	private PersistenciaFactory() {
 	}
-	
-	
+
+	public static PersistenciaFactory getInstance() {
+		return SingletonManager.getInstance(PersistenciaFactory.class);
+	}
+
+	public ProdutoRepository<Produto, Integer> getMemoriaProdutoRepository() {
+		return SingletonManager.getInstance(MemoriaProdutoRepository.class);
+	}
+
+	public ProdutoRepository<Produto, Integer> getHSQLProdutoRepository() {
+		return new HSQLProdutoRepository();
+	}
 }
