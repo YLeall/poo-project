@@ -4,8 +4,9 @@ import br.com.ucsal.annotations.Singleton;
 import br.com.ucsal.controller.SingletonManager;
 import br.com.ucsal.model.Produto;
 
-@Singleton
 public class PersistenciaFactory {
+
+	private static PersistenciaFactory instance;
 
 	private PersistenciaFactory() {
 	}
