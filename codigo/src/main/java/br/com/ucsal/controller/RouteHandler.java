@@ -52,9 +52,7 @@ public class RouteHandler {
             try {
                 Command commandInstance = (Command) dependencyInjector.createAndInjectInstance(clazz);
                 routes.put(classPath, commandInstance);
-                System.out.println("Registered route: " + classPath);
             } catch (Exception e) {
-                System.err.println("Error processing route for class " + clazz.getName());
                 e.printStackTrace();
             }
         }

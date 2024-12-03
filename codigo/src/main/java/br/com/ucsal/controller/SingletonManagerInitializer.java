@@ -13,7 +13,6 @@ public class SingletonManagerInitializer {
         for (Class<?> singletonClass : singletonClasses) {
             try {
                 SingletonManager.getInstance(singletonClass);
-                System.out.println("Singleton inicializado: " + singletonClass.getSimpleName());
             } catch (Exception e) {
                 System.err.println("Erro ao inicializar singleton " + singletonClass.getSimpleName() + ": " + e.getMessage());
             }

@@ -28,15 +28,13 @@ public class DependencyInjector {
     }
 
     public void injectDependencies() {
-        System.out.println("===== DependencyInjector: Starting Dependency Injection =====");
 
         Reflections reflections = new Reflections("br.com.ucsal");
 
-        // Get all class names in the package
+
         Set<String> classNames = reflections.getAllTypes();
         Set<Class<?>> allClasses = new HashSet<>();
 
-        // Convert class names to Class objects
         for (String className : classNames) {
             try {
                 Class<?> clazz = Class.forName(className);
@@ -46,14 +44,12 @@ public class DependencyInjector {
             }
         }
 
-        System.out.println("Total de classes encontradas: " + allClasses.size());
 
         for (Class<?> clazz : allClasses) {
             // Verificar se a classe tem campos com @Inject
             boolean hasInjectFields = hasInjectFields(clazz);
 
             if (hasInjectFields) {
-                System.out.println("==== Classe de processamento com campos de injeção: " + clazz.getName() + " ====");
 
                 try {
                     // Criar a instância da classe
@@ -64,13 +60,11 @@ public class DependencyInjector {
                         injectFieldDependencies(instance);
                     }
                 } catch (Exception e) {
-                    System.err.println("Classe de processamento de erro: " + clazz.getName());
                     e.printStackTrace();
                 }
             }
         }
 
-        System.out.println("===== DependencyInjector: Dependency Injection Completed =====");
     }
 
     private boolean hasInjectFields(Class<?> clazz) {
@@ -84,21 +78,15 @@ public class DependencyInjector {
 
     private Object createInstance(Class<?> clazz) {
         try {
-            System.out.println("Criando instância para: " + clazz.getName());
 
-            // Try to find a no-args constructor
             Constructor<?> constructor = clazz.getDeclaredConstructor();
             constructor.setAccessible(true);
 
             Object instance = constructor.newInstance();
-            System.out.println("Instance created successfully: " + instance);
             return instance;
         } catch (NoSuchMethodException e) {
-            // No no-args constructor found
-            System.err.println("No no-args constructor found for class: " + clazz.getName());
             return null;
         } catch (Exception e) {
-            System.err.println("Error creating instance of class: " + clazz.getName());
             e.printStackTrace();
             return null;
         }
@@ -118,11 +106,9 @@ public class DependencyInjector {
         if (instance == null) return;
 
         Class<?> clazz = instance.getClass();
-        System.out.println("Injecting dependencies for: " + clazz.getName());
 
         for (Field field : clazz.getDeclaredFields()) {
             if (field.isAnnotationPresent(Inject.class)) {
-                System.out.println("Found @Inject field: " + field.getName());
 
                 field.setAccessible(true);
                 try {
@@ -143,7 +129,6 @@ public class DependencyInjector {
                     // Verificar se já existe uma instância em cache
                     if (singletonInstances.containsKey(implClass)) {
                         dependency = singletonInstances.get(implClass);
-                        System.out.println("Using cached instance for: " + implClass.getName());
                     } else {
                         // Criar nova instância
                         dependency = implClass.getDeclaredConstructor().newInstance();
@@ -153,15 +138,12 @@ public class DependencyInjector {
 
                         // Armazenar instância no cache
                         singletonInstances.put(implClass, dependency);
-                        System.out.println("Created and cached new instance for: " + implClass.getName());
                     }
 
                     // Definir a dependência
                     field.set(instance, dependency);
-                    System.out.println("Injected dependency: " + dependency);
 
                 } catch (Exception e) {
-                    System.err.println("Error injecting dependency into field: " + field.getName());
                     e.printStackTrace();
                     throw new RuntimeException(e);
                 }
