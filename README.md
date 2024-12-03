@@ -43,10 +43,36 @@ Este é um projeto de aplicação web Java para gerenciamento de produtos, com i
 - Cria instâncias de repositórios
 - Permite troca fácil entre repositórios de memória e banco de dados
 
+Exemplo de implementação:
+```java
+public ProdutoRepository<Produto, Integer> getMemoriaProdutoRepository() {
+    return SingletonManager.getInstance(MemoriaProdutoRepository.class);
+}
+
+public ProdutoRepository<Produto, Integer> getHSQLProdutoRepository() {
+    return new HSQLProdutoRepository();
+}
+```
+
 ### Gerenciamento Singleton
 Duas abordagens de implementação:
 1. Anotação `@Singleton`
 2. `SingletonManager` para criação de instância com segurança de thread
+
+Código-chave do Singleton:
+```java
+public static <T> T getInstance(Class<T> clazz) {
+    if (instance == null) {
+        synchronized (SingletonManager.class) {
+            if (instance == null) {
+                instance = constructor.newInstance();
+                singletonInstances.put(clazz, instance);
+            }
+        }
+    }
+    return instance;
+}
+```
 
 ## Fluxo da Aplicação 🔄
 * Ao iniciar, `DatabaseInitializationListener` cria banco de dados
@@ -54,6 +80,26 @@ Duas abordagens de implementação:
 * `RouteHandler` mapeia URLs para servlets
 * `DependencyInjector` injeta dependências automaticamente
 * Servlets processam requisições CRUD para produtos
+
+## Recursos Dinâmicos 🌟
+
+### Carregamento Dinâmico de Rotas
+Código-chave para carregamento de rotas:
+```java
+Reflections reflections = new Reflections("br.com.ucsal");
+Set<Class<?>> classes = reflections.getTypesAnnotatedWith(Rota.class);
+```
+
+### Injeção Dinâmica de Dependências
+Trecho representativo de injeção:
+```java
+for (Class<?> clazz : allClasses) {
+    if (hasInjectFields(clazz)) {
+        Object instance = createInstance(clazz);
+        injectFieldDependencies(instance);
+    }
+}
+```
 
 ## Componentes Principais 📦
 - Modelo: `Produto`
@@ -63,18 +109,6 @@ Duas abordagens de implementação:
   - `HSQLProdutoRepository`
 - Serviço: `ProdutoService`
 - Controladores: Servlets para operações CRUD
-
-## Recursos Dinâmicos 🌟
-
-### Carregamento Dinâmico de Rotas
-- Escaneia o pacote `br.com.ucsal`
-- Identifica classes anotadas com `@Rota`
-- Mapeia automaticamente rotas para instâncias de comando
-
-### Injeção Dinâmica de Dependências
-- Descobre campos anotados com `@Inject`
-- Instancia e injeta dependências automaticamente
-- Resolve implementações de interface usando `@RepositoryType`
 
 ## Configuração e Instalação 🛠️
 
@@ -88,8 +122,8 @@ Duas abordagens de implementação:
 3. Execute a aplicação
 
 ```bash
-git clone https://github.com/seuusuario/nome-do-repositorio.git](https://github.com/YLeall/poo-project.git)
-cd poo-project
+git clone https://github.com/YLeall/poo-project.git
+cd nome-do-repositorio
 mvn clean install
 mvn tomcat:run  # ou comando equivalente
 ```
