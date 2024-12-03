@@ -17,8 +17,6 @@ public class MemoriaProdutoRepository implements ProdutoRepository<Produto, Inte
     private Map<Integer, Produto> produtos = new HashMap<>();
     private AtomicInteger currentId = new AtomicInteger(1);
 
-//    private static MemoriaProdutoRepository instance;
-
     private MemoriaProdutoRepository() {
     }
 
