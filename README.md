@@ -1,7 +1,15 @@
+Adorei esses diagramas! Vou adicioná-los ao README para deixar a documentação ainda mais completa.
+
 # Aplicação Web Java 🚀
 
 ## Visão Geral
 Este é um projeto de aplicação web Java para gerenciamento de produtos, com injeção de dependência personalizada e roteamento dinâmico.
+
+## Diagrama de Classe
+![Diagrama de Classes](https://github.com/user-attachments/assets/a778c424-5f42-47db-8735-fba15e296c57)
+
+## Diagrama de Sequência
+![Diagrama de Sequência](https://github.com/user-attachments/assets/32673848-a0a4-4c94-b4bd-75ea1dfc2f54)
 
 ## Recursos Principais
 - Injeção de dependência baseada em anotações personalizadas
@@ -48,7 +56,6 @@ Exemplo de implementação:
 public ProdutoRepository<Produto, Integer> getMemoriaProdutoRepository() {
     return SingletonManager.getInstance(MemoriaProdutoRepository.class);
 }
-
 public ProdutoRepository<Produto, Integer> getHSQLProdutoRepository() {
     return new HSQLProdutoRepository();
 }
@@ -120,10 +127,10 @@ for (Class<?> clazz : allClasses) {
 1. Clone o repositório
 2. Instale as dependências
 3. Execute a aplicação
-
 ```bash
 git clone https://github.com/YLeall/poo-project.git
 cd nome-do-repositorio
 mvn clean install
 mvn tomcat:run  # ou comando equivalente
 ```
+
