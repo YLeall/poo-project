@@ -4,15 +4,13 @@ import br.com.ucsal.annotations.Inject;
 import br.com.ucsal.annotations.RepositoryType;
 import br.com.ucsal.annotations.Singleton;
 import br.com.ucsal.controller.SingletonManager;
-import br.com.ucsal.persistencia.PersistenciaFactory;
+
 import org.reflections.Reflections;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class DependencyInjector {
     private static DependencyInjector instance;
@@ -28,10 +26,7 @@ public class DependencyInjector {
     }
 
     public void injectDependencies() {
-
         Reflections reflections = new Reflections("br.com.ucsal");
-
-
         Set<String> classNames = reflections.getAllTypes();
         Set<Class<?>> allClasses = new HashSet<>();
 
@@ -44,18 +39,12 @@ public class DependencyInjector {
             }
         }
 
-
         for (Class<?> clazz : allClasses) {
-            // Verificar se a classe tem campos com @Inject
             boolean hasInjectFields = hasInjectFields(clazz);
 
             if (hasInjectFields) {
-
                 try {
-                    // Criar a instância da classe
                     Object instance = createInstance(clazz);
-
-                    // Injetar as dependências nos campos
                     if (instance != null) {
                         injectFieldDependencies(instance);
                     }
@@ -64,7 +53,6 @@ public class DependencyInjector {
                 }
             }
         }
-
     }
 
     private boolean hasInjectFields(Class<?> clazz) {
@@ -76,31 +64,21 @@ public class DependencyInjector {
         return false;
     }
 
-    private Object createInstance(Class<?> clazz) {
-        try {
-
-            Constructor<?> constructor = clazz.getDeclaredConstructor();
-            constructor.setAccessible(true);
-
-            Object instance = constructor.newInstance();
-            return instance;
-        } catch (NoSuchMethodException e) {
-            return null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+    private Object createInstance(Class<?> clazz) throws Exception {
+        if (clazz.isAnnotationPresent(Singleton.class)) {
+            return SingletonManager.getInstance(clazz);
         }
+
+        Constructor<?> constructor = clazz.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        return constructor.newInstance();
     }
 
     public Object createAndInjectInstance(Class<?> clazz) throws Exception {
-        Object instance = clazz.getDeclaredConstructor().newInstance();
-
+        Object instance = createInstance(clazz);
         injectFieldDependencies(instance);
-
         return instance;
     }
-
-    private Map<Class<?>, Object> singletonInstances = new ConcurrentHashMap<>();
 
     private void injectFieldDependencies(Object instance) {
         if (instance == null) return;
@@ -109,7 +87,6 @@ public class DependencyInjector {
 
         for (Field field : clazz.getDeclaredFields()) {
             if (field.isAnnotationPresent(Inject.class)) {
-
                 field.setAccessible(true);
                 try {
                     Object dependency;
@@ -126,21 +103,14 @@ public class DependencyInjector {
                         }
                     }
 
-                    // Verificar se já existe uma instância em cache
-                    if (singletonInstances.containsKey(implClass)) {
-                        dependency = singletonInstances.get(implClass);
+                    if (implClass.isAnnotationPresent(Singleton.class)) {
+                        dependency = SingletonManager.getInstance(implClass);
                     } else {
-                        // Criar nova instância
                         dependency = implClass.getDeclaredConstructor().newInstance();
-
-                        // Recursivamente injetar dependências
-                        injectFieldDependencies(dependency);
-
-                        // Armazenar instância no cache
-                        singletonInstances.put(implClass, dependency);
                     }
 
-                    // Definir a dependência
+                    injectFieldDependencies(dependency);
+
                     field.set(instance, dependency);
 
                 } catch (Exception e) {

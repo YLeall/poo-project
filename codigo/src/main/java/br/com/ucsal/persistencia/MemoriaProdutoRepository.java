@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import br.com.ucsal.annotations.Inject;
 import br.com.ucsal.annotations.Singleton;
+import br.com.ucsal.controller.SingletonManager;
 import br.com.ucsal.model.Produto;
 
 @Singleton
@@ -17,6 +18,10 @@ public class MemoriaProdutoRepository implements ProdutoRepository<Produto, Inte
     private AtomicInteger currentId = new AtomicInteger(1);
 
     private MemoriaProdutoRepository() {
+    }
+
+    public static synchronized MemoriaProdutoRepository getInstance() {
+        return SingletonManager.getInstance(MemoriaProdutoRepository.class);
     }
     
     @Override
