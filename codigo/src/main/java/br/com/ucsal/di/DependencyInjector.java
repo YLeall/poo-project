@@ -42,18 +42,18 @@ public class DependencyInjector {
                 Class<?> clazz = Class.forName(className);
                 allClasses.add(clazz);
             } catch (ClassNotFoundException e) {
-                System.err.println("Could not load class: " + className);
+                System.err.println("Não foi possível carregar a classe: " + className);
             }
         }
 
-        System.out.println("Total Classes Found: " + allClasses.size());
+        System.out.println("Total de classes encontradas: " + allClasses.size());
 
         for (Class<?> clazz : allClasses) {
             // Verificar se a classe tem campos com @Inject
             boolean hasInjectFields = hasInjectFields(clazz);
 
             if (hasInjectFields) {
-                System.out.println("==== Processing Class with Injection Fields: " + clazz.getName() + " ====");
+                System.out.println("==== Classe de processamento com campos de injeção: " + clazz.getName() + " ====");
 
                 try {
                     // Criar a instância da classe
@@ -64,7 +64,7 @@ public class DependencyInjector {
                         injectFieldDependencies(instance);
                     }
                 } catch (Exception e) {
-                    System.err.println("Error processing class: " + clazz.getName());
+                    System.err.println("Classe de processamento de erro: " + clazz.getName());
                     e.printStackTrace();
                 }
             }
@@ -84,7 +84,7 @@ public class DependencyInjector {
 
     private Object createInstance(Class<?> clazz) {
         try {
-            System.out.println("Creating instance for: " + clazz.getName());
+            System.out.println("Criando instância para: " + clazz.getName());
 
             // Try to find a no-args constructor
             Constructor<?> constructor = clazz.getDeclaredConstructor();
@@ -104,7 +104,14 @@ public class DependencyInjector {
         }
     }
 
-    // Adicione um campo para armazenar instâncias únicas
+    public Object createAndInjectInstance(Class<?> clazz) throws Exception {
+        Object instance = clazz.getDeclaredConstructor().newInstance();
+
+        injectFieldDependencies(instance);
+
+        return instance;
+    }
+
     private Map<Class<?>, Object> singletonInstances = new ConcurrentHashMap<>();
 
     private void injectFieldDependencies(Object instance) {
@@ -123,9 +130,7 @@ public class DependencyInjector {
                     Class<?> fieldType = field.getType();
                     Class<?> implClass = fieldType;
 
-                    // Check if the field type is an interface
                     if (fieldType.isInterface()) {
-                        // Check for RepositoryType (equivalent to ImplementedBy)
                         if (field.isAnnotationPresent(RepositoryType.class)) {
                             RepositoryType implementedBy = field.getAnnotation(RepositoryType.class);
                             implClass = implementedBy.value();

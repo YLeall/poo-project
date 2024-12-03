@@ -14,9 +14,7 @@ import java.io.IOException;
 
 @WebServlet("/view/*")
 public class ProdutoController extends HttpServlet {
-
     private final RouteHandler routeHandler = RouteHandler.getInstance();
-
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

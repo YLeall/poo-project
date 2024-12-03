@@ -6,5 +6,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface Rota {
-    String value(); // Path value, e.g., "/produtos"
+    String value();
 }

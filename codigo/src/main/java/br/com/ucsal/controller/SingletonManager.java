@@ -12,7 +12,7 @@ public class SingletonManager {
 
     public static <T> T getInstance(Class<T> clazz) {
         if (!clazz.isAnnotationPresent(Singleton.class)) {
-            throw new IllegalArgumentException("Class must be annotated with @Singleton");
+            throw new IllegalArgumentException("A classe deve ser anotada com @Singleton");
         }
 
         T instance = (T) singletonInstances.get(clazz);
@@ -27,7 +27,7 @@ public class SingletonManager {
                         singletonInstances.put(clazz, instance);
                     } catch (NoSuchMethodException | InstantiationException |
                              IllegalAccessException | InvocationTargetException e) {
-                        throw new RuntimeException("Error creating singleton instance", e);
+                        throw new RuntimeException("Erro ao criar instância singleton", e);
                     }
                 }
             }

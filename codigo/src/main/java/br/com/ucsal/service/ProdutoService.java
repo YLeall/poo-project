@@ -14,7 +14,6 @@ public class ProdutoService {
     @RepositoryType(HSQLProdutoRepository.class)
     private ProdutoRepository<Produto, Integer> produtoRepository;
 
-    // Empty constructor
     public ProdutoService() {
     }
 

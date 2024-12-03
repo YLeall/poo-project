@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpServletResponse;
 @Rota("/adicionarProduto")
 public class ProdutoAdicionarServlet implements Command {
  private static final long serialVersionUID = 1L;
-
     @Inject
     private ProdutoService produtoService;
 

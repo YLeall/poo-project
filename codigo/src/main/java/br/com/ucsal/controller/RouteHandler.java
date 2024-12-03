@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -17,8 +16,10 @@ import org.reflections.Reflections;
 public class RouteHandler {
     private static RouteHandler instance;
     private final Map<String, Command> routes = new HashMap<>();
+    private final DependencyInjector dependencyInjector;
 
     private RouteHandler() {
+        this.dependencyInjector = DependencyInjector.getInstance();
         loadRoutes();
     }
 
@@ -49,9 +50,9 @@ public class RouteHandler {
             }
 
             try {
-                Command commandInstance = (Command) clazz.getDeclaredConstructor().newInstance();
+                Command commandInstance = (Command) dependencyInjector.createAndInjectInstance(clazz);
                 routes.put(classPath, commandInstance);
-                System.out.println("olaaaaa");
+                System.out.println("Registered route: " + classPath);
             } catch (Exception e) {
                 System.err.println("Error processing route for class " + clazz.getName());
                 e.printStackTrace();
@@ -72,12 +73,7 @@ public class RouteHandler {
             throw new RouteNotFoundException("No route found for path: " + fullPath);
         }
 
-        try {
-            DependencyInjector.getInstance().injectDependencies();
-            command.execute(request, response);
-        } catch (Exception e) {
-            throw new ServletException("Error executing route: " + fullPath, e);
-        }
+        command.execute(request, response);
     }
 
     private Command findMatchingRoute(String path) {
