@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import br.com.ucsal.annotations.Inject;
 import br.com.ucsal.annotations.Singleton;
 import br.com.ucsal.model.Produto;
 

@@ -11,10 +11,8 @@ public class InicializadorListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         // Carregue suas classes ou inicialize recursos aqui
         SingletonManagerInitializer.initializeSingletons();
-
-        RouteHandler.getInstance();
-
         DependencyInjector.getInstance().injectDependencies();
+        RouteHandler.getInstance();
 
         System.out.println("Inicializando recursos na inicialização da aplicação");
     }

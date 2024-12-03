@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.ucsal.annotations.Inject;
 import br.com.ucsal.model.Produto;
 import br.com.ucsal.util.DatabaseUtil;
 
