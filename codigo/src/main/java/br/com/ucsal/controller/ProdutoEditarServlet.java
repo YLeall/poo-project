@@ -2,6 +2,8 @@ package br.com.ucsal.controller;
 
 import java.io.IOException;
 
+import br.com.ucsal.annotations.Inject;
+import br.com.ucsal.annotations.Rota;
 import br.com.ucsal.model.Produto;
 import br.com.ucsal.persistencia.HSQLProdutoRepository;
 import br.com.ucsal.service.ProdutoService;
@@ -11,16 +13,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+@Rota("/editarProduto")
 public class ProdutoEditarServlet implements Command {
     private static final long serialVersionUID = 1L;
-
+    @Inject
     private ProdutoService produtoService;
-
-    public ProdutoEditarServlet() {
-        this.produtoService = new ProdutoService(new HSQLProdutoRepository());
-    }
-
-
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String method = request.getMethod();
