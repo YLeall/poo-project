@@ -1,5 +1,3 @@
-Adorei esses diagramas! Vou adicioná-los ao README para deixar a documentação ainda mais completa.
-
 # Aplicação Web Java 🚀
 
 ## Visão Geral
